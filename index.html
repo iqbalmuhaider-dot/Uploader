@@ -3,106 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkolaHub Pro - Whitelist Enabled</title>
+    <title>SkolaHub Pro - Galeri & Sejarah</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .copy-box { cursor: pointer; transition: background 0.2s; }
-        .copy-box:active { background: #e2e8f0; }
-        [v-cloak] { display: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .btn-action { transition: all 0.2s; }
+        .btn-action:active { transform: scale(0.95); }
+        .glass-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+<body class="bg-slate-50 min-h-screen text-slate-800">
 
-    <div id="app" class="max-w-6xl mx-auto p-4 md:p-8">
-        <!-- Navigation Bar -->
-        <nav class="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-            <div class="flex items-center gap-2">
-                <div class="bg-blue-600 p-2 rounded-lg">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    <div id="app" class="max-w-6xl mx-auto p-4 md:p-6 lg:p-8">
+        
+        <!-- Navbar -->
+        <nav class="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 sticky top-4 z-50">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-blue-200 shadow-lg">
+                    <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
                 </div>
-                <span class="font-bold text-xl tracking-tight">SkolaHub <span class="text-blue-600">Pro</span></span>
+                <div>
+                    <h1 class="font-bold text-xl leading-none">SkolaHub</h1>
+                    <p class="text-[10px] text-slate-400 font-medium tracking-wide">FILE MANAGER PRO</p>
+                </div>
             </div>
-            <div id="auth-status" class="flex items-center gap-4">
-                <!-- Profil Pengguna / Login -->
-            </div>
+            <div id="auth-status" class="flex items-center gap-4"></div>
         </nav>
 
         <main id="main-content">
-            <!-- Loading State -->
-            <div id="app-loading" class="flex flex-col items-center justify-center py-20">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                <p class="mt-4 text-slate-500">Memulakan sistem...</p>
+            <!-- Loading -->
+            <div id="app-loading" class="flex flex-col items-center justify-center py-32">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-blue-600"></div>
+                <p class="mt-4 text-slate-500 font-medium animate-pulse">Menghubungkan ke pangkalan data...</p>
             </div>
 
             <!-- Login View -->
-            <div id="login-view" class="hidden flex flex-col items-center justify-center py-20">
-                <div class="text-center max-w-md">
-                    <h2 class="text-3xl font-extrabold mb-4">Akses Terhad</h2>
-                    <p class="text-slate-600 mb-8">Hanya pengguna yang telah didaftarkan (whitelist) sahaja dibenarkan menggunakan sistem ini.</p>
-                    <button id="google-login-btn" class="flex items-center gap-3 bg-white border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition shadow-sm mx-auto">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
-                        Log Masuk dengan Google
+            <div id="login-view" class="hidden flex flex-col items-center justify-center py-20 min-h-[60vh]">
+                <div class="text-center max-w-md w-full bg-white p-10 rounded-3xl shadow-xl border border-slate-100">
+                    <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-600">
+                        <i class="fa-solid fa-shield-halved text-3xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-3 text-slate-800">Akses Whitelist</h2>
+                    <p class="text-slate-500 mb-8 leading-relaxed">Sistem ini tertutup. Sila log masuk menggunakan akaun Google yang telah didaftarkan.</p>
+                    
+                    <button id="google-login-btn" class="w-full flex items-center justify-center gap-3 bg-slate-900 text-white hover:bg-slate-800 py-4 rounded-xl font-bold transition-all shadow-lg shadow-slate-200 hover:shadow-slate-300 transform hover:-translate-y-1">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 bg-white rounded-full p-0.5">
+                        Log Masuk Google
                     </button>
-                    <div id="login-error" class="mt-4 text-red-500 text-sm font-medium hidden"></div>
+                    <div id="login-error" class="mt-6 text-red-500 text-sm bg-red-50 p-3 rounded-lg hidden border border-red-100"></div>
                 </div>
             </div>
 
             <!-- Dashboard View -->
             <div id="dashboard-view" class="hidden space-y-8">
                 
-                <!-- Admin Section -->
-                <div id="admin-section" class="hidden space-y-6">
-                    <div class="bg-amber-50 border border-amber-200 p-6 rounded-2xl">
-                        <h3 class="font-bold text-amber-800 mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.535 5.356a1 1 0 011.415 0A3.998 3.998 0 0010 14a3.998 3.998 0 002.12-1.644 1 1 0 111.415 1.414A5.998 5.998 0 0110 16a5.998 5.998 0 01-3.535-2.23z" clip-rule="evenodd"></path></svg>
-                            Panel Pengurusan Admin (Whitelist)
-                        </h3>
-                        
-                        <!-- Whitelist Form -->
-                        <div class="flex flex-col md:flex-row gap-2 mb-6">
-                            <input type="email" id="whitelist-email" placeholder="Masukkan emel untuk dibenarkan..." class="flex-1 p-3 rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">
-                            <button id="add-whitelist-btn" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition">Tambah Pengguna</button>
-                        </div>
-
-                        <div id="users-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <!-- Senarai pengguna yang diwhitelist -->
-                        </div>
+                <!-- Admin Panel -->
+                <div id="admin-section" class="hidden bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100 p-6 rounded-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-amber-600"><i class="fa-solid fa-crown text-9xl"></i></div>
+                    <h3 class="font-bold text-amber-800 mb-6 flex items-center gap-2 relative z-10">
+                        <i class="fa-solid fa-users-gear"></i> Pengurusan Pengguna (Whitelist)
+                    </h3>
+                    <div class="flex flex-col md:flex-row gap-3 mb-6 relative z-10">
+                        <input type="email" id="whitelist-email" placeholder="example@gmail.com" class="flex-1 p-3 rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm">
+                        <button id="add-whitelist-btn" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl font-bold shadow-amber-200 shadow-md transition-all active:scale-95">
+                            <i class="fa-solid fa-plus mr-2"></i>Tambah
+                        </button>
                     </div>
+                    <div id="users-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 relative z-10"></div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Kiri: Borang Muat Naik -->
-                    <div class="lg:col-span-1">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 sticky top-8">
-                            <h3 class="font-bold text-lg mb-4">Muat Naik Baru</h3>
-                            <div id="upload-box" class="space-y-4">
-                                <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:border-blue-400 transition-colors bg-slate-50/50">
-                                    <input type="file" id="fileInput" accept="image/*" class="hidden">
-                                    <label for="fileInput" class="cursor-pointer block">
-                                        <svg class="mx-auto h-10 w-10 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                                        <span id="fileName" class="text-sm text-slate-600 font-medium block">Pilih Fail</span>
-                                        <span class="text-[10px] text-slate-400">Max 10MB (JPG, PNG, WEBP)</span>
-                                    </label>
-                                </div>
-                                <button id="uploadBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
-                                    <span>Muat Naik</span>
-                                </button>
-                                <div id="upload-status" class="hidden text-sm text-center font-medium"></div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Left: Upload Box -->
+                    <div class="lg:col-span-4 sticky top-24">
+                        <div class="bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
+                            <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> Muat Naik
+                            </h3>
+                            
+                            <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-all cursor-pointer group">
+                                <input type="file" id="fileInput" accept="image/*" class="hidden">
+                                <label for="fileInput" class="cursor-pointer block">
+                                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-image text-2xl"></i>
+                                    </div>
+                                    <span id="fileName" class="text-slate-700 font-semibold block mb-1">Pilih Gambar</span>
+                                    <span class="text-xs text-slate-400">JPG, PNG, WEBP (Max 10MB)</span>
+                                </label>
                             </div>
+
+                            <button id="uploadBtn" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed">
+                                Muat Naik Sekarang
+                            </button>
+                            
+                            <div id="upload-status" class="mt-4 text-sm text-center font-medium hidden p-2 rounded-lg"></div>
                         </div>
                     </div>
 
-                    <!-- Kanan: Sejarah -->
-                    <div class="lg:col-span-2">
-                        <h3 class="font-bold text-lg mb-4 flex items-center justify-between">
-                            Sejarah Muat Naik Anda
-                            <span id="history-count" class="text-xs bg-slate-200 px-2 py-1 rounded-full text-slate-600">0 fail</span>
-                        </h3>
-                        <div id="history-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Item sejarah -->
+                    <!-- Right: History List -->
+                    <div class="lg:col-span-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-bold text-xl flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> Galeri Sejarah
+                            </h3>
+                            <span id="history-count" class="text-xs font-bold bg-slate-200 text-slate-600 px-3 py-1 rounded-full">0 Item</span>
                         </div>
-                        <div id="empty-history" class="hidden bg-white p-12 rounded-2xl border border-dashed border-slate-200 text-center text-slate-400">
-                            <p>Tiada sejarah ditemui. Mula muat naik fail pertama anda!</p>
+
+                        <!-- Empty State -->
+                        <div id="empty-history" class="hidden bg-white p-16 rounded-3xl border border-dashed border-slate-200 text-center">
+                            <div class="text-slate-300 mb-4"><i class="fa-regular fa-images text-6xl"></i></div>
+                            <p class="text-slate-500 font-medium">Belum ada gambar.</p>
+                            <p class="text-xs text-slate-400 mt-1">Muat naik gambar pertama anda sekarang!</p>
+                        </div>
+
+                        <!-- Grid Sejarah -->
+                        <div id="history-list" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <!-- Kad akan dijana di sini oleh JS -->
                         </div>
                     </div>
                 </div>
@@ -116,6 +134,7 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, addDoc, collection, query, onSnapshot, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // Konfigurasi Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCicoxWdR3OeHDmQggPc6-9vaCnaEimPIg",
             authDomain: "uploader-b1865.firebaseapp.com",
@@ -135,277 +154,271 @@
         let currentUser = null;
         let userData = null;
 
-        const authStatusDiv = document.getElementById('auth-status');
-        const loginView = document.getElementById('login-view');
-        const loginErrorDiv = document.getElementById('login-error');
-        const dashboardView = document.getElementById('dashboard-view');
-        const appLoading = document.getElementById('app-loading');
-        const fileInput = document.getElementById('fileInput');
-        const fileName = document.getElementById('fileName');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const historyList = document.getElementById('history-list');
-        const emptyHistory = document.getElementById('empty-history');
-        const adminSection = document.getElementById('admin-section');
-        const usersListDiv = document.getElementById('users-list');
-        const whitelistEmailInput = document.getElementById('whitelist-email');
-        const addWhitelistBtn = document.getElementById('add-whitelist-btn');
+        // UI Elements
+        const views = {
+            loading: document.getElementById('app-loading'),
+            login: document.getElementById('login-view'),
+            dashboard: document.getElementById('dashboard-view')
+        };
+        const els = {
+            authStatus: document.getElementById('auth-status'),
+            loginError: document.getElementById('login-error'),
+            fileInput: document.getElementById('fileInput'),
+            fileName: document.getElementById('fileName'),
+            uploadBtn: document.getElementById('uploadBtn'),
+            historyList: document.getElementById('history-list'),
+            emptyHistory: document.getElementById('empty-history'),
+            adminSection: document.getElementById('admin-section'),
+            whitelistInput: document.getElementById('whitelist-email'),
+            status: document.getElementById('upload-status')
+        };
 
-        // --- PENGURUSAN AKSES & AUTH ---
-
+        // --- AUTH ---
         onAuthStateChanged(auth, async (user) => {
-            appLoading.classList.remove('hidden');
+            views.loading.classList.remove('hidden');
             if (user) {
                 try {
-                    const setupResult = await handleUserSetup(user);
-                    if (setupResult.allowed) {
+                    const setup = await handleUserSetup(user);
+                    if (setup.allowed) {
                         currentUser = user;
-                        showView('dashboard');
                         setupHistoryListener(user.uid);
-                        renderAuthNav(user);
-                        if (userData?.role === 'admin') {
-                            showAdminPanel();
-                        }
+                        renderNav(user);
+                        if (userData?.role === 'admin') setupAdminListener();
+                        switchView('dashboard');
                     } else {
                         await signOut(auth);
-                        showLoginError("Akses ditolak. Emel anda tiada dalam whitelist.");
+                        showError("Maaf, emel anda tiada dalam senarai Whitelist.");
                     }
                 } catch (e) {
                     console.error(e);
-                    showLoginError("Ralat sistem semasa memproses log masuk.");
+                    showError("Ralat sistem.");
                 }
             } else {
                 currentUser = null;
-                showView('login');
-                authStatusDiv.innerHTML = '';
+                switchView('login');
+                els.authStatus.innerHTML = '';
             }
-            appLoading.classList.add('hidden');
+            views.loading.classList.add('hidden');
         });
 
         async function handleUserSetup(user) {
+            // Logic admin pertama & whitelist check (sama seperti sebelum ini)
             const statsRef = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'stats');
             const statsSnap = await getDoc(statsRef);
             
-            // Bypass untuk Admin Pertama jika sistem baru kosong
             if (!statsSnap.exists()) {
-                const profile = {
-                    uid: user.uid,
-                    email: user.email,
-                    displayName: user.displayName,
-                    photoURL: user.photoURL,
-                    role: 'admin',
-                    createdAt: serverTimestamp()
-                };
+                const profile = { uid: user.uid, email: user.email, displayName: user.displayName, photoURL: user.photoURL, role: 'admin', createdAt: serverTimestamp() };
                 await setDoc(statsRef, { totalUsers: 1 });
                 await setDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data'), profile);
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid), profile);
-                // Autowhitelist untuk admin pertama
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'whitelist', user.email), { email: user.email, addedAt: serverTimestamp() });
                 userData = profile;
                 return { allowed: true };
             }
 
-            // Semak Whitelist
-            const whitelistRef = doc(db, 'artifacts', appId, 'public', 'data', 'whitelist', user.email);
-            const whitelistSnap = await getDoc(whitelistRef);
+            const whitelistSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'whitelist', user.email));
+            if (!whitelistSnap.exists()) return { allowed: false };
 
-            if (!whitelistSnap.exists()) {
-                return { allowed: false };
-            }
-
-            // Jika whitelist wujud, ambil data profile
             const userRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data');
             const docSnap = await getDoc(userRef);
-
+            
             if (!docSnap.exists()) {
-                const profile = {
-                    uid: user.uid,
-                    email: user.email,
-                    displayName: user.displayName,
-                    photoURL: user.photoURL,
-                    role: 'user',
-                    createdAt: serverTimestamp()
-                };
+                const profile = { uid: user.uid, email: user.email, displayName: user.displayName, photoURL: user.photoURL, role: 'user', createdAt: serverTimestamp() };
                 await setDoc(userRef, profile);
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid), profile);
                 userData = profile;
             } else {
                 userData = docSnap.data();
             }
-
             return { allowed: true };
         }
 
-        document.getElementById('google-login-btn').onclick = () => {
-            loginErrorDiv.classList.add('hidden');
-            signInWithPopup(auth, provider);
+        document.getElementById('google-login-btn').onclick = () => signInWithPopup(auth, provider);
+        
+        // --- UPLOAD ---
+        els.fileInput.onchange = (e) => {
+            if(e.target.files[0]) els.fileName.innerText = e.target.files[0].name;
         };
 
-        function showLoginError(msg) {
-            loginErrorDiv.innerText = msg;
-            loginErrorDiv.classList.remove('hidden');
-            showView('login');
-        }
-
-        function renderAuthNav(user) {
-            authStatusDiv.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-xs font-bold leading-none">${user.displayName}</p>
-                        <p class="text-[10px] text-slate-500">${userData?.role === 'admin' ? 'Administrator' : 'Akses Whitelist'}</p>
-                    </div>
-                    <img src="${user.photoURL}" class="w-8 h-8 rounded-full border border-slate-200">
-                    <button id="logout-btn" class="text-xs text-red-500 font-bold hover:underline">Keluar</button>
-                </div>
-            `;
-            document.getElementById('logout-btn').onclick = () => signOut(auth);
-        }
-
-        // --- ADMIN: PENGURUSAN WHITELIST ---
-
-        addWhitelistBtn.onclick = async () => {
-            const email = whitelistEmailInput.value.trim().toLowerCase();
-            if (!email || !email.includes('@')) return alert('Masukkan emel yang sah!');
+        els.uploadBtn.onclick = async () => {
+            const file = els.fileInput.files[0];
+            if (!file) return alert('Sila pilih gambar!');
             
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'whitelist', email), {
-                    email: email,
-                    addedBy: currentUser.email,
-                    addedAt: serverTimestamp()
-                });
-                whitelistEmailInput.value = '';
-                alert(`Emel ${email} berjaya ditambah ke Whitelist!`);
-            } catch (e) {
-                alert('Ralat: Anda mungkin tiada kebenaran Admin.');
-            }
-        };
-
-        async function showAdminPanel() {
-            adminSection.classList.remove('hidden');
-            const q = collection(db, 'artifacts', appId, 'public', 'data', 'whitelist');
-            onSnapshot(q, (snapshot) => {
-                const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                usersListDiv.innerHTML = list.map(u => `
-                    <div class="flex items-center justify-between bg-white p-3 rounded-xl border border-amber-100 shadow-sm">
-                        <div class="min-w-0">
-                            <p class="text-xs font-bold truncate text-slate-700">${u.email}</p>
-                            <p class="text-[9px] text-slate-400">Ditambah: ${u.addedAt?.toDate().toLocaleDateString() || 'Baru'}</p>
-                        </div>
-                        <button onclick="removeFromWhitelist('${u.id}')" class="text-red-400 hover:text-red-600 p-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </button>
-                    </div>
-                `).join('');
-            });
-        }
-
-        window.removeFromWhitelist = async (emailId) => {
-            if (emailId === currentUser.email) return alert('Anda tidak boleh membuang diri sendiri!');
-            if (confirm(`Adakah anda pasti mahu membatalkan akses untuk ${emailId}?`)) {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'whitelist', emailId));
-            }
-        };
-
-        // --- MUAT NAIK & SEJARAH (Sama seperti versi Pro) ---
-
-        fileInput.onchange = (e) => {
-            if (e.target.files.length > 0) fileName.innerText = e.target.files[0].name;
-        };
-
-        uploadBtn.onclick = async () => {
-            const file = fileInput.files[0];
-            if (!file) return alert('Pilih fail!');
-            const status = document.getElementById('upload-status');
-            status.innerText = "Memuat naik...";
-            status.classList.remove('hidden', 'text-red-500', 'text-green-500');
-            uploadBtn.disabled = true;
+            updateStatus('loading', 'Sedang memuat naik ke R2...', 'bg-blue-100 text-blue-700');
+            els.uploadBtn.disabled = true;
 
             try {
                 const formData = new FormData();
                 formData.append('file', file);
+                
+                // Pastikan URL Worker betul di sini
                 const res = await fetch('https://upload.skolahub.com/upload', { method: 'POST', body: formData });
-                const result = await res.json();
-                if (!res.ok) throw new Error(result.error);
+                const data = await res.json();
+                
+                if(!res.ok) throw new Error(data.error || 'Ralat Server');
 
                 await addDoc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'uploads'), {
-                    url: result.url,
-                    filename: result.filename,
-                    html: result.html,
-                    markdown: result.markdown,
+                    url: data.url,
+                    filename: data.filename,
+                    html: data.html,
+                    markdown: data.markdown,
                     timestamp: serverTimestamp(),
-                    size: (file.size / 1024).toFixed(2) + ' KB'
+                    size: (file.size / 1024).toFixed(1) + ' KB'
                 });
-                
-                status.innerText = "Berjaya!";
-                status.classList.add('text-green-500');
-                fileInput.value = '';
-                fileName.innerText = "Pilih Fail";
+
+                updateStatus('success', 'Berjaya!', 'bg-green-100 text-green-700');
+                setTimeout(() => els.status.classList.add('hidden'), 3000);
+                els.fileInput.value = '';
+                els.fileName.innerText = 'Pilih Gambar';
             } catch (err) {
-                status.innerText = "Gagal: " + err.message;
-                status.classList.add('text-red-500');
+                updateStatus('error', err.message, 'bg-red-100 text-red-700');
             } finally {
-                uploadBtn.disabled = false;
+                els.uploadBtn.disabled = false;
             }
         };
 
+        // --- HISTORY RENDER ---
         function setupHistoryListener(uid) {
             const q = collection(db, 'artifacts', appId, 'users', uid, 'uploads');
             onSnapshot(q, (snapshot) => {
-                const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 docs.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
-                renderHistory(docs);
+                
+                document.getElementById('history-count').innerText = `${docs.length} Item`;
+                if(docs.length === 0) {
+                    els.emptyHistory.classList.remove('hidden');
+                    els.historyList.innerHTML = '';
+                } else {
+                    els.emptyHistory.classList.add('hidden');
+                    renderCards(docs);
+                }
             });
         }
 
-        function renderHistory(items) {
-            document.getElementById('history-count').innerText = `${items.length} fail`;
-            if (items.length === 0) {
-                emptyHistory.classList.remove('hidden');
-                historyList.innerHTML = '';
-                return;
-            }
-            emptyHistory.classList.add('hidden');
-            historyList.innerHTML = items.map(item => `
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-4 items-start">
-                    <img src="${item.url}" class="w-20 h-20 object-cover rounded-lg bg-slate-100 border">
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[10px] text-slate-400 truncate">${item.filename}</p>
-                        <div class="mt-2 space-y-1">
-                            <input type="text" value="${item.url}" readonly onclick="copyThis(this)" class="w-full text-[10px] p-1 bg-slate-50 border rounded truncate cursor-pointer hover:bg-slate-100">
-                            <div class="flex gap-2">
-                                <button onclick="copyRaw('${item.html}')" class="text-[9px] bg-slate-100 px-2 py-1 rounded font-bold hover:bg-blue-100">HTML</button>
-                                <button onclick="copyRaw('${item.markdown}')" class="text-[9px] bg-slate-100 px-2 py-1 rounded font-bold hover:bg-blue-100">MD</button>
-                                <a href="${item.url}" target="_blank" class="text-[9px] bg-blue-600 text-white px-2 py-1 rounded font-bold">Buka</a>
-                            </div>
+        function renderCards(items) {
+            els.historyList.innerHTML = items.map(item => `
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition-shadow flex flex-col h-full group">
+                    
+                    <!-- Header: Filename & Delete -->
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-2 overflow-hidden">
+                            <span class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">IMG</span>
+                            <span class="text-xs font-semibold text-slate-700 truncate" title="${item.filename}">${item.filename}</span>
                         </div>
+                        <button onclick="deleteItem('${item.id}')" class="text-slate-300 hover:text-red-500 transition-colors p-1" title="Padam Sejarah">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+
+                    <!-- Image Thumbnail -->
+                    <div class="bg-slate-50 rounded-xl overflow-hidden border border-slate-100 h-40 flex items-center justify-center mb-4 relative">
+                        <img src="${item.url}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/400x300?text=Error'">
+                        <a href="${item.url}" target="_blank" class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></a>
+                    </div>
+
+                    <!-- Input Link (Copy) -->
+                    <div class="relative mb-3">
+                        <input type="text" value="${item.url}" readonly class="w-full bg-slate-50 border border-slate-200 text-xs text-slate-600 rounded-lg py-2 px-3 pr-8 focus:outline-none focus:border-blue-400 cursor-pointer hover:bg-white transition-colors" onclick="copyText(this)">
+                        <i class="fa-regular fa-copy absolute right-3 top-2.5 text-slate-400 text-xs pointer-events-none"></i>
+                    </div>
+
+                    <!-- Bottom Buttons -->
+                    <div class="mt-auto grid grid-cols-3 gap-2">
+                        <button onclick="copyRaw('${item.html}')" class="btn-action bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px] font-bold py-2 rounded-lg border border-slate-200">
+                            HTML
+                        </button>
+                        <button onclick="copyRaw('${item.markdown}')" class="btn-action bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px] font-bold py-2 rounded-lg border border-slate-200">
+                            MD
+                        </button>
+                        <a href="${item.url}" target="_blank" class="btn-action bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-bold py-2 rounded-lg border border-blue-100 text-center flex items-center justify-center gap-1">
+                            Buka <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i>
+                        </a>
                     </div>
                 </div>
             `).join('');
         }
 
-        function showView(view) {
-            loginView.classList.add('hidden');
-            dashboardView.classList.add('hidden');
-            if (view === 'login') loginView.classList.remove('hidden');
-            if (view === 'dashboard') dashboardView.classList.remove('hidden');
-        }
+        // --- GLOBAL ACTIONS ---
+        window.deleteItem = async (id) => {
+            if(confirm("Adakah anda pasti mahu memadam rekod ini daripada sejarah?")) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'uploads', id));
+                } catch(e) { alert("Gagal memadam: " + e.message); }
+            }
+        };
 
-        window.copyThis = (el) => {
+        window.copyText = (el) => {
             el.select();
             document.execCommand('copy');
-            const val = el.value;
+            const original = el.value;
             el.value = "Disalin!";
-            setTimeout(() => el.value = val, 1000);
+            setTimeout(() => el.value = original, 800);
         };
 
         window.copyRaw = (text) => {
-            const el = document.createElement('textarea');
-            el.value = text;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            alert('Kod disalin!');
+            navigator.clipboard.writeText(text).then(() => alert("Kod disalin ke clipboard!"));
         };
+
+        // --- ADMIN & UTILS ---
+        document.getElementById('add-whitelist-btn').onclick = async () => {
+            const email = els.whitelistInput.value.trim();
+            if(!email) return;
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'whitelist', email), { email, addedBy: currentUser.email, addedAt: serverTimestamp() });
+                els.whitelistInput.value = '';
+                alert("Berjaya ditambah!");
+            } catch(e) { alert("Gagal menambah pengguna."); }
+        };
+
+        function setupAdminListener() {
+            els.adminSection.classList.remove('hidden');
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'whitelist'), (snap) => {
+                const list = document.getElementById('users-list');
+                list.innerHTML = snap.docs.map(d => `
+                    <div class="flex justify-between items-center bg-white/80 p-2 px-3 rounded-lg border border-amber-100 text-xs">
+                        <span class="font-medium text-amber-900 truncate">${d.id}</span>
+                        <button onclick="removeUser('${d.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `).join('');
+            });
+        }
+        
+        window.removeUser = async (id) => {
+            if(confirm(`Padam akses ${id}?`)) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'whitelist', id));
+        };
+
+        function switchView(name) {
+            views.loading.classList.add('hidden');
+            views.login.classList.add('hidden');
+            views.dashboard.classList.add('hidden');
+            views[name].classList.remove('hidden');
+        }
+
+        function showError(msg) {
+            els.loginError.innerText = msg;
+            els.loginError.classList.remove('hidden');
+            switchView('login');
+        }
+
+        function updateStatus(type, msg, classes) {
+            els.status.innerText = msg;
+            els.status.className = `mt-4 text-sm text-center font-medium p-2 rounded-lg ${classes}`;
+            els.status.classList.remove('hidden');
+        }
+
+        function renderNav(user) {
+            els.authStatus.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-bold text-slate-700">${user.displayName}</p>
+                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">${userData?.role === 'admin' ? 'Administrator' : 'Verified User'}</p>
+                    </div>
+                    <img src="${user.photoURL}" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer hover:border-blue-200 transition-colors" title="Log Keluar" onclick="confirm('Log keluar?') && auth.signOut()">
+                </div>
+            `;
+        }
+        // Expose auth globally for logout
+        window.auth = auth;
+
     </script>
 </body>
 </html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkolaHub Pro - Uploader & History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .copy-box { cursor: pointer; transition: background 0.2s; }
+        .copy-box:active { background: #e2e8f0; }
+        [v-cloak] { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-6xl mx-auto p-4 md:p-8">
+        <!-- Navigation Bar -->
+        <nav class="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-600 p-2 rounded-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <span class="font-bold text-xl tracking-tight">SkolaHub <span class="text-blue-600">Pro</span></span>
+            </div>
+            <div id="auth-status" class="flex items-center gap-4">
+                <!-- User Profile / Login -->
+            </div>
+        </nav>
+
+        <main id="main-content">
+            <!-- Loading State -->
+            <div id="app-loading" class="flex flex-col items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <p class="mt-4 text-slate-500">Memulakan sistem...</p>
+            </div>
+
+            <!-- Login View -->
+            <div id="login-view" class="hidden flex flex-col items-center justify-center py-20">
+                <div class="text-center max-w-md">
+                    <h2 class="text-3xl font-extrabold mb-4">Muat Naik & Simpan Sejarah</h2>
+                    <p class="text-slate-600 mb-8">Sila log masuk dengan akaun Google anda untuk mula memuat naik gambar dan menyimpan sejarah link anda selamanya.</p>
+                    <button id="google-login-btn" class="flex items-center gap-3 bg-white border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition shadow-sm mx-auto">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+                        Log Masuk dengan Google
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="hidden space-y-8">
+                
+                <!-- Admin Section (Hidden by default) -->
+                <div id="admin-section" class="hidden bg-amber-50 border border-amber-200 p-6 rounded-2xl">
+                    <h3 class="font-bold text-amber-800 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.535 5.356a1 1 0 011.415 0A3.998 3.998 0 0010 14a3.998 3.998 0 002.12-1.644 1 1 0 111.415 1.414A5.998 5.998 0 0110 16a5.998 5.998 0 01-3.535-2.23z" clip-rule="evenodd"></path></svg>
+                        Admin Dashboard
+                    </h3>
+                    <div id="users-list" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Users will be listed here -->
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Left: Upload Form -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 sticky top-8">
+                            <h3 class="font-bold text-lg mb-4">Muat Naik Baru</h3>
+                            <div id="upload-box" class="space-y-4">
+                                <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:border-blue-400 transition-colors bg-slate-50/50">
+                                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                                    <label for="fileInput" class="cursor-pointer block">
+                                        <svg class="mx-auto h-10 w-10 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                        <span id="fileName" class="text-sm text-slate-600 font-medium block">Pilih Fail</span>
+                                        <span class="text-[10px] text-slate-400">Max 10MB (JPG, PNG, WEBP)</span>
+                                    </label>
+                                </div>
+                                <button id="uploadBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                                    <span>Muat Naik</span>
+                                </button>
+                                <div id="upload-status" class="hidden text-sm text-center font-medium"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: History -->
+                    <div class="lg:col-span-2">
+                        <h3 class="font-bold text-lg mb-4 flex items-center justify-between">
+                            Sejarah Muat Naik Anda
+                            <span id="history-count" class="text-xs bg-slate-200 px-2 py-1 rounded-full text-slate-600">0 fail</span>
+                        </h3>
+                        <div id="history-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- History items -->
+                        </div>
+                        <div id="empty-history" class="hidden bg-white p-12 rounded-2xl border border-dashed border-slate-200 text-center text-slate-400">
+                            <p>Tiada sejarah ditemui. Mula muat naik fail pertama anda!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, addDoc, collection, query, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Konfigurasi Firebase anda
+        const firebaseConfig = {
+            apiKey: "AIzaSyCicoxWdR3OeHDmQggPc6-9vaCnaEimPIg",
+            authDomain: "uploader-b1865.firebaseapp.com",
+            projectId: "uploader-b1865",
+            storageBucket: "uploader-b1865.firebasestorage.app",
+            messagingSenderId: "148216038687",
+            appId: "1:148216038687:web:4f2090a4724958ddb4dc2a",
+            measurementId: "G-DM3RXRYPDR"
+        };
+
+        // Initialize
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+        const appId = "skolahub-uploader-v2"; // Unique ID untuk Firestore path
+
+        // Global State
+        let currentUser = null;
+        let userData = null;
+
+        // Elements
+        const authStatusDiv = document.getElementById('auth-status');
+        const loginView = document.getElementById('login-view');
+        const dashboardView = document.getElementById('dashboard-view');
+        const appLoading = document.getElementById('app-loading');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const historyList = document.getElementById('history-list');
+        const emptyHistory = document.getElementById('empty-history');
+        const adminSection = document.getElementById('admin-section');
+        const usersListDiv = document.getElementById('users-list');
+
+        // --- AUTH LOGIC ---
+
+        onAuthStateChanged(auth, async (user) => {
+            appLoading.classList.add('hidden');
+            if (user) {
+                currentUser = user;
+                await handleUserSetup(user);
+                showView('dashboard');
+                setupHistoryListener(user.uid);
+                renderAuthNav(user);
+                if (userData?.role === 'admin') {
+                    showAdminPanel();
+                }
+            } else {
+                currentUser = null;
+                showView('login');
+                authStatusDiv.innerHTML = '';
+            }
+        });
+
+        async function handleUserSetup(user) {
+            const userRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data');
+            const docSnap = await getDoc(userRef);
+
+            // Cek jika ada user lain dalam sistem (untuk set admin pertama)
+            const globalUsersRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+            const usersQuery = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'stats'));
+            
+            let role = 'user';
+            if (!docSnap.exists()) {
+                // Jika belum ada stats, bermaksud ini user pertama -> Admin
+                if (!usersQuery.exists()) {
+                    role = 'admin';
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'stats'), { totalUsers: 1 });
+                }
+                
+                const profile = {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                    role: role,
+                    createdAt: serverTimestamp()
+                };
+                
+                await setDoc(userRef, profile);
+                // Simpan juga ke public data untuk admin view
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid), profile);
+                userData = profile;
+            } else {
+                userData = docSnap.data();
+            }
+        }
+
+        document.getElementById('google-login-btn').onclick = () => signInWithPopup(auth, provider);
+
+        function renderAuthNav(user) {
+            authStatusDiv.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold leading-none">${user.displayName}</p>
+                        <p class="text-[10px] text-slate-500">${userData?.role === 'admin' ? 'Administrator' : 'Member'}</p>
+                    </div>
+                    <img src="${user.photoURL}" class="w-8 h-8 rounded-full border border-slate-200">
+                    <button id="logout-btn" class="text-xs text-red-500 font-bold hover:underline">Keluar</button>
+                </div>
+            `;
+            document.getElementById('logout-btn').onclick = () => signOut(auth);
+        }
+
+        // --- UPLOAD LOGIC ---
+
+        fileInput.onchange = (e) => {
+            if (e.target.files.length > 0) fileName.innerText = e.target.files[0].name;
+        };
+
+        uploadBtn.onclick = async () => {
+            const file = fileInput.files[0];
+            if (!file) return alert('Pilih fail!');
+            if (!currentUser) return alert('Sila login semula.');
+
+            const status = document.getElementById('upload-status');
+            status.innerText = "Sedang menghantar ke R2...";
+            status.classList.remove('hidden', 'text-red-500', 'text-green-500');
+            uploadBtn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                // 1. Upload ke Cloudflare Worker anda
+                const res = await fetch('https://upload.skolahub.com/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await res.json();
+                if (!res.ok) throw new Error(result.error);
+
+                // 2. Simpan rekod ke Firestore
+                const uploadData = {
+                    url: result.url,
+                    filename: result.filename,
+                    html: result.html,
+                    markdown: result.markdown,
+                    userId: currentUser.uid,
+                    timestamp: serverTimestamp(),
+                    size: (file.size / 1024).toFixed(2) + ' KB'
+                };
+
+                await addDoc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'uploads'), uploadData);
+                
+                status.innerText = "Berjaya!";
+                status.classList.add('text-green-500');
+                fileInput.value = '';
+                fileName.innerText = "Pilih Fail";
+            } catch (err) {
+                status.innerText = "Gagal: " + err.message;
+                status.classList.add('text-red-500');
+            } finally {
+                uploadBtn.disabled = false;
+            }
+        };
+
+        // --- HISTORY & UI LOGIC ---
+
+        function setupHistoryListener(uid) {
+            const q = collection(db, 'artifacts', appId, 'users', uid, 'uploads');
+            // Nota: Mengikut Rule 2, kita ambil semua dan sort dalam JS
+            onSnapshot(q, (snapshot) => {
+                const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Sort by timestamp descending
+                docs.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+                renderHistory(docs);
+            }, (err) => console.error("History Error:", err));
+        }
+
+        function renderHistory(items) {
+            document.getElementById('history-count').innerText = `${items.length} fail`;
+            if (items.length === 0) {
+                emptyHistory.classList.remove('hidden');
+                historyList.innerHTML = '';
+                return;
+            }
+            emptyHistory.classList.add('hidden');
+            historyList.innerHTML = items.map(item => `
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-4 items-start">
+                    <img src="${item.url}" class="w-20 h-20 object-cover rounded-lg bg-slate-100 border">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[10px] text-slate-400 truncate">${item.filename}</p>
+                        <div class="mt-2 space-y-1">
+                            <input type="text" value="${item.url}" readonly onclick="copyThis(this)" class="w-full text-[10px] p-1 bg-slate-50 border rounded truncate cursor-pointer hover:bg-slate-100">
+                            <div class="flex gap-2">
+                                <button onclick="copyRaw('${item.html}')" class="text-[9px] bg-slate-100 px-2 py-1 rounded font-bold hover:bg-blue-100">HTML</button>
+                                <button onclick="copyRaw('${item.markdown}')" class="text-[9px] bg-slate-100 px-2 py-1 rounded font-bold hover:bg-blue-100">MD</button>
+                                <a href="${item.url}" target="_blank" class="text-[9px] bg-blue-600 text-white px-2 py-1 rounded font-bold">Buka</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function showAdminPanel() {
+            adminSection.classList.remove('hidden');
+            const q = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+            onSnapshot(q, (snapshot) => {
+                const users = snapshot.docs.map(d => d.data());
+                usersListDiv.innerHTML = users.map(u => `
+                    <div class="flex items-center gap-3 bg-white p-3 rounded-xl border border-amber-100">
+                        <img src="${u.photoURL}" class="w-8 h-8 rounded-full">
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold truncate">${u.displayName}</p>
+                            <p class="text-[9px] text-slate-500">${u.email}</p>
+                        </div>
+                        <span class="ml-auto text-[8px] bg-slate-100 px-2 py-0.5 rounded uppercase font-bold">${u.role}</span>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function showView(view) {
+            loginView.classList.add('hidden');
+            dashboardView.classList.add('hidden');
+            if (view === 'login') loginView.classList.remove('hidden');
+            if (view === 'dashboard') dashboardView.classList.remove('hidden');
+        }
+
+        // Helpers for Global Scope
+        window.copyThis = (el) => {
+            el.select();
+            document.execCommand('copy');
+            const val = el.value;
+            el.value = "Copied!";
+            setTimeout(() => el.value = val, 1000);
+        };
+
+        window.copyRaw = (text) => {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            alert('Embed code copied!');
+        };
+
+    </script>
+</body>
+</html>
+
